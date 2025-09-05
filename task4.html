@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To-Do App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      margin-top: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input[type="text"],
+    input[type="datetime-local"] {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #task-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    .task-item {
+      background: #e9ecef;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-item.completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .task-buttons button {
+      margin-left: 5px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 To-Do List</h1>
+    <form id="task-form">
+      <input type="text" id="task-input" placeholder="Enter a task" required />
+      <input type="datetime-local" id="task-date" />
+      <button type="submit">Add Task</button>
+    </form>
+    <ul id="task-list"></ul>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('task-form');
+      const taskInput = document.getElementById('task-input');
+      const taskDate = document.getElementById('task-date');
+      const taskList = document.getElementById('task-list');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const taskText = taskInput.value.trim();
+        const dueDate = taskDate.value;
+
+        if (taskText !== '') {
+          addTask(taskText, dueDate);
+          form.reset();
+        }
+      });
+
+      function addTask(text, date) {
+        const li = document.createElement('li');
+        li.className = 'task-item';
+        li.innerHTML = `
+          <span>${text} ${date ? <small>(${new Date(date).toLocaleString()})</small> : ''}</span>
+          <div class="task-buttons">
+            <button onclick="markComplete(this)">✅</button>
+            <button onclick="editTask(this)">✏️</button>
+            <button onclick="deleteTask(this)">🗑️</button>
+          </div>
+        `;
+        taskList.appendChild(li);
+      }
+    });
+
+    function markComplete(btn) {
+      const item = btn.closest('li');
+      item.classList.toggle('completed');
+    }
+
+    function editTask(btn) {
+      const item = btn.closest('li');
+      const span = item.querySelector('span');
+      const newText = prompt('Edit task:', span.textContent);
+      if (newText) span.innerHTML = newText;
+    }
+
+    function deleteTask(btn) {
+      const item = btn.closest('li');
+      item.remove();
+    }
+  </script>
+</body>
+</html>
